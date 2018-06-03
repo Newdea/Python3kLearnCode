@@ -255,7 +255,7 @@ from bs4 import Beautifulsoup
 soup = Beautifulsoup
 print((type(soup)))
 
-import FakeUser
+from src import FakeUser
 
 user_a = FakeUser()
 user_b = SnsUser()
