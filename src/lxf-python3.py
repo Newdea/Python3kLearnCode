@@ -178,7 +178,7 @@ import time, functools
 
 
 def logger(text='excute'):
-    # @functools.wraps(text)
+    @functools.wraps(text)
     def metric(fn):
         @functools.wraps(fn)
         def wrapper(*args, **kwargs):
@@ -204,7 +204,8 @@ def fast(x, y):
 
 
 # @metric
-@logger
+# @logger
+@logger('run')
 def slow(x, y, z):
     time.sleep(0.1234)
     return x * y * z
@@ -231,3 +232,45 @@ int2 = functools.partial(int, base=2)
 
 # 仅仅是把base参数重新设定默认值为2，但也可以在函数调用时传入其他值：
 int2('1000000', base=10)
+
+
+# 请利用@property给一个Screen对象加上width和height属性，以及一个只读属性resolution：
+# -*- coding: utf-8 -*-
+
+
+class Screen(object):
+    # __slots__ = ('width', 'height')     # 用tuple定义允许绑定的属性名称
+    
+    @property
+    def width(self):
+        return self._width
+    
+    @width.setter
+    def width(self, w):
+        self._width = w
+    
+    # 可读写属性
+    @property
+    def height(self):
+        return self._height
+    
+    @height.setter
+    def height(self, h):
+        self._height = h
+    
+    @property  # 只读属性
+    def resolution(self):
+        return self._height * self._width
+    
+    pass
+
+
+# 测试:
+s = Screen()
+s.width = 1024
+s.height = 768
+print('resolution =', s.resolution)
+if s.resolution == 786432:
+    print('测试通过!')
+else:
+    print('测试失败!')
