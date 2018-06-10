@@ -274,3 +274,37 @@ if s.resolution == 786432:
     print('测试通过!')
 else:
     print('测试失败!')
+
+
+class Animal(object):
+    pass
+
+
+# 大类:
+class Mammal(Animal):
+    pass
+
+
+class Bird(Animal):
+    pass
+
+
+# 各种动物:
+
+class Ostrich(Bird):
+    pass
+
+
+# 现在，我们要给动物再加上Runnable和Flyable的功能，只需要先定义好Runnable和Flyable的类：
+
+
+class Runnable(object):
+    def run(self):
+        print('Running...')
+
+
+# 对于需要Runnable功能的动物，就多继承一个Runnable，例如Dog：
+
+
+class Dog(Mammal, Runnable):
+    pass
