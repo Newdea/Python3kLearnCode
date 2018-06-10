@@ -240,6 +240,14 @@ int2('1000000', base=10)
 
 class Screen(object):
     __slots__ = ('_width', '_height')  # 用tuple定义允许绑定的属性名称
+
+    def __str__(self):  # 返回用戶看到的字符串
+        return 'Screen'
+
+    __repr__ = __str__  # 返回開發者看到的字符串
+
+    def __getattr__(self, item):
+        raise AttributeError('%s has no attribute %s' % (self.__dict__, item))
     
     @property
     def width(self):
@@ -308,3 +316,55 @@ class Runnable(object):
 
 class Dog(Mammal, Runnable):
     pass
+
+
+# 判斷對象是否可以調用
+callable(Dog())
+
+
+# 如果要写SDK，给每个URL对应的API都写一个方法，那得累死，而且，API一旦改动，SDK也要改。
+# 利用完全动态的__getattr__，我们可以写出一个链式调用：
+class Chain(object):
+    
+    def __init__(self, path=''):
+        self._path = path
+    
+    def __getattr__(self, path):
+        return Chain('%s//%s' % (self._path, path))  # 1-%s/[]  self._path,
+    
+    def __str__(self):
+        return self._path
+    
+    __repr__ = __str__
+
+
+# 測試
+print(Chain().status.user.timeline.list)
+
+
+# '/status/user/timeline/list'
+
+# Git
+class ChainGit(object):
+    
+    def __init__(self, name='/user'):
+        self._name = name
+    
+    def __getattr__(self, name):
+        if name == 'user':
+            return ChainGit(self._name)
+        return ChainGit('%s/%s' % (self._name, name))  # 1-%s/[]  self._name,
+    
+    def __call__(self, *args, **kwargs):
+        return ChainGit('%s/%s' % (self._name, args[0]))
+        # print('My name is %s:%s.' % (self._name, args[-1]))
+    
+    def __str__(self):
+        return self._name
+    
+    __repr__ = __str__
+
+
+# 測試
+print(ChainGit().user('micheal').repos)  #
+# GET /user/micheal/repos
