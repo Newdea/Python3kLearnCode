@@ -239,7 +239,7 @@ int2('1000000', base=10)
 
 
 class Screen(object):
-    # __slots__ = ('width', 'height')     # 用tuple定义允许绑定的属性名称
+    __slots__ = ('_width', '_height')  # 用tuple定义允许绑定的属性名称
     
     @property
     def width(self):
