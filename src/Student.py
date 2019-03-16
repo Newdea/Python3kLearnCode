@@ -86,3 +86,68 @@ else:
         print('测试失败!')
     else:
         print('测试成功!')
+
+
+# 把Student的gender属性改造为枚举类型，可以避免使用字符串：
+
+# -*- coding: utf-8 -*-
+from enum import Enum, unique
+
+
+@unique
+class Gender(Enum):
+    Male = 0
+    Female = 1
+
+
+class Student(object):
+    def __init__(self, name, gender):
+        self.name = name
+        self.gender = gender
+
+
+# 测试:
+bart = Student('Bart', Gender.Male)
+if bart.gender == Gender.Male:
+    print('测试通过!')
+else:
+    print('测试失败!')
+
+
+class Hello(object):
+    def hello(self, name='world'):
+        print('Hello, %s.' % name)
+#
+#  type()函数既可以返回一个对象的类型，又可以创建出新的类型
+#
+def fn(self, name='world'): # 先定义函数
+     print('Hello, %s.' % name)
+
+Hello = type('Hello', (object,), dict(hello=fn)) # 创建Hello class
+
+h = Hello()
+h.hello()
+
+print(type(Hello))
+print(type(h))
+
+# 定义ListMetaclass，按照默认习惯，metaclass的类名总是以Metaclass结尾，以便清楚地表示这是一个metaclass：
+
+# metaclass是类的模板，所以必须从`type`类型派生：
+class ListMetaclass(type):
+    def __new__(cls, name, bases, attrs):
+        attrs['add'] = lambda self, value: self.append(value)
+        return type.__new__(cls, name, bases, attrs)
+
+# 有了ListMetaclass，我们在定义类的时候还要指示使用ListMetaclass来定制类，传入关键字参数metaclass：
+# ORM全称“Object Relational Mapping”，即对象-关系映射，就是把关系数据库的一行映射为一个对象，也就是一个类对应一个表，这样，写代码更简单，不用直接操作SQL语句。
+# 要编写一个ORM框架，所有的类都只能动态定义，因为只有使用者才能根据表的结构定义出对应的类来。
+class MyList(list, metaclass=ListMetaclass):
+    pass
+
+L = MyList()
+L.add(1)
+L
+
+
+
